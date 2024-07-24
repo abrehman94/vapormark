@@ -193,7 +193,9 @@ def procmon_stat_cstate(args):
         col_names = []
         for line in f:
             tokens = tokenize(line)
-            if tokens[0] == "CPU":
+            if tokens[0] == "CPU" or \
+               tokens[0] == "PKG" or \
+               tokens[0] == "CORE":
                 for token in tokens:
                     col_names.append(token)
                 break
@@ -210,7 +212,10 @@ def procmon_stat_cstate(args):
             col_order = ('C0', 'POLL', 'C1', 'C2', 'C3', 'Freq')
             stat_list = []
             for col in col_order:
-                stat_list.append( (col, float(stat_dict[col])) )
+                if col in stat_dict.keys():
+                    stat_list.append( (col, float(stat_dict[col])) )
+                else:
+                    stat_list.append( (col, 0.0 ) )
             stat_dict['CPU'] = int(stat_dict['CPU'])
             cpu_id = stat_dict['CPU']
             core_stat[cpu_id] = stat_list
